@@ -57,6 +57,21 @@ services:
         networks:
             - test-app-network
 
+    #MySQL Service
+    elastic:
+#        image: elasticsearch:7.16.1
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.16.1
+        container_name: elastic
+        restart: unless-stopped
+        tty: true
+        ports:
+            - 9200:9200
+            - 9300:9300
+        environment:
+            discovery.type: single-node
+        networks:
+            - test-app-network
+
     #   PhpMyAdmin
     phpmyadmin_test:
         image: phpmyadmin/phpmyadmin
