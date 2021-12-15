@@ -1,0 +1,87 @@
+version: '3.3'
+services:
+    #PHP Service
+    php_fpm_test:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: php
+        container_name: php_fpm_test
+        restart: unless-stopped
+        tty: true
+        #ports:
+        #      - 8009:9000
+        environment:
+            SERVICE_NAME: php_fpm_test
+            SERVICE_TAGS: dev
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+            - ./php_fpm/local.ini:/usr/local/etc/php/conf.d/local.ini
+        networks:
+            - test-app-network
+
+    #Nginx Service
+    webserver_test:
+        image: nginx:alpine
+        container_name: webserver_test
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "8080:80"
+        #  - "443:443"
+        volumes:
+            - ./:/var/www
+            - ./nginx/conf.d/:/etc/nginx/conf.d/
+        networks:
+            - test-app-network
+
+    #MySQL Service
+    mysql_test:
+        image: mysql:5.7.22
+        container_name: mysql_test
+        restart: unless-stopped
+        tty: true
+        ports:
+            - 3308:3306
+        environment:
+            MYSQL_DATABASE: hamimohajer
+            MYSQL_ROOT_PASSWORD: H@m!m0h@j3r
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql_test
+        volumes:
+            - ./my-data:/var/lib/mysql/
+            - ./mysql/my.cnf:/etc/mysql/my.cnf
+        command:
+            - --explicit_defaults_for_timestamp
+        networks:
+            - test-app-network
+
+    #   PhpMyAdmin
+    phpmyadmin_test:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin_test
+        depends_on:
+            - mysql_test
+        restart: unless-stopped
+        volumes:
+            - ./phpmyadmin/phpmyadmin.ini:/usr/local/etc/php/php.ini
+        links:
+            - mysql_test:mysql_test
+        ports:
+            - 9090:80
+        environment:
+            MYSQL_ROOT_PASSWORD: H@m!m0h@j3r
+            PMA_HOST: mysql_test
+        networks:
+            - test-app-network
+
+#Docker Networks
+networks:
+    test-app-network:
+        driver: bridge
+#Volumes
+volumes:
+    dbdata:
+        driver: local
+
