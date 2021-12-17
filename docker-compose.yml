@@ -2,15 +2,12 @@ version: '3.3'
 services:
     #PHP Service
     php_fpm_test:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        image: php
+        image: thecodingmachine/php:8.0-v4-fpm
         container_name: php_fpm_test
         restart: unless-stopped
         tty: true
-        #ports:
-        #      - 8009:9000
+        ports:
+              - 9000:9000
         environment:
             SERVICE_NAME: php_fpm_test
             SERVICE_TAGS: dev
@@ -43,10 +40,10 @@ services:
         restart: unless-stopped
         tty: true
         ports:
-            - 3308:3306
+            - 3306:3306
         environment:
-            MYSQL_DATABASE: hamimohajer
-            MYSQL_ROOT_PASSWORD: H@m!m0h@j3r
+            MYSQL_DATABASE: elastic
+            MYSQL_ROOT_PASSWORD: elastic
             SERVICE_TAGS: dev
             SERVICE_NAME: mysql_test
         volumes:
@@ -57,9 +54,8 @@ services:
         networks:
             - test-app-network
 
-    #MySQL Service
+    #elastic Service
     elastic:
-#        image: elasticsearch:7.16.1
         image: docker.elastic.co/elasticsearch/elasticsearch:7.16.1
         container_name: elastic
         restart: unless-stopped
@@ -69,6 +65,8 @@ services:
             - 9300:9300
         environment:
             discovery.type: single-node
+        volumes:
+            - dbdata:/usr/share/elasticsearch/data
         networks:
             - test-app-network
 
