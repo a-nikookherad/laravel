@@ -114,7 +114,7 @@ class PositionReadRepo
 
         return Position::searchQuery($query)
             ->sortRaw([['salary' => 'asc'], ['lived_at.keyword' => 'asc']])
-            ->paginate(10)
+            ->paginate($request->limit ?? 10)
             ->onlyDocuments();
     }
 }
