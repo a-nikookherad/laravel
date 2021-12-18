@@ -36,7 +36,6 @@ class PositionReadRepo
 
     public function query($request)
     {
-        $request = \request();
         if ($request->isNotFilled([
             "category",
             "location",
