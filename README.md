@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 # test API's
 
 ### first level
@@ -26,8 +25,3 @@ so we can search
 __notic__: all _API's_ requests with example into the postman_collection in project root path! please import that into postman
 
 and __done__
-=======
-
-#iran talent test API's
-``
->>>>>>> Stashed changes
